@@ -1,9 +1,0 @@
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\obj\Debug\E-mail-implements.csprojAssemblyReference.cache
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\obj\Debug\E_mail_implements.Properties.Resources.resources
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\obj\Debug\E-mail-implements.csproj.GenerateResource.cache
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\obj\Debug\E-mail-implements.csproj.CoreCompileInputs.cache
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\bin\Debug\E_mail_implements.exe.config
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\bin\Debug\E_mail_implements.exe
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\bin\Debug\E_mail_implements.pdb
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\obj\Debug\E_mail_implements.exe
-E:\Visual Studio Projects\E-mail-implements\E-mail-implements\obj\Debug\E_mail_implements.pdb
