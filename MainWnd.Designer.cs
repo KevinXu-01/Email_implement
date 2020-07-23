@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.菜单 = new System.Windows.Forms.MenuStrip();
-            this.账户ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.添加账户ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.关于ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.AccountStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddAccountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AboutStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.菜单.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -40,42 +40,42 @@
             // 
             this.菜单.Font = new System.Drawing.Font("Microsoft YaHei UI", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.菜单.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.账户ToolStripMenuItem,
-            this.关于ToolStripMenuItem});
+            this.AccountStripMenuItem,
+            this.AboutStripMenuItem});
             this.菜单.Location = new System.Drawing.Point(0, 0);
             this.菜单.Name = "菜单";
             this.菜单.Size = new System.Drawing.Size(1264, 28);
             this.菜单.TabIndex = 0;
             this.菜单.Text = "账户";
             // 
-            // 账户ToolStripMenuItem
+            // AccountStripMenuItem
             // 
-            this.账户ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.添加账户ToolStripMenuItem});
-            this.账户ToolStripMenuItem.Name = "账户ToolStripMenuItem";
-            this.账户ToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
-            this.账户ToolStripMenuItem.Text = "账户";
+            this.AccountStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AddAccountToolStripMenuItem});
+            this.AccountStripMenuItem.Name = "AccountStripMenuItem";
+            this.AccountStripMenuItem.Size = new System.Drawing.Size(49, 24);
+            this.AccountStripMenuItem.Text = "账户";
             // 
-            // 添加账户ToolStripMenuItem
+            // AddAccountToolStripMenuItem
             // 
-            this.添加账户ToolStripMenuItem.Name = "添加账户ToolStripMenuItem";
-            this.添加账户ToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
-            this.添加账户ToolStripMenuItem.Text = "添加账户...";
-            this.添加账户ToolStripMenuItem.Click += new System.EventHandler(this.添加账户ToolStripMenuItem_Click);
+            this.AddAccountToolStripMenuItem.Name = "AddAccountToolStripMenuItem";
+            this.AddAccountToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.AddAccountToolStripMenuItem.Text = "添加账户...";
+            this.AddAccountToolStripMenuItem.Click += new System.EventHandler(this.添加账户ToolStripMenuItem_Click);
             // 
-            // 关于ToolStripMenuItem
+            // AboutStripMenuItem
             // 
-            this.关于ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.关于ToolStripMenuItem1});
-            this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
-            this.关于ToolStripMenuItem.Text = "关于";
+            this.AboutStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.AboutStripMenuItem.Name = "AboutStripMenuItem";
+            this.AboutStripMenuItem.Size = new System.Drawing.Size(49, 24);
+            this.AboutStripMenuItem.Text = "关于";
             // 
-            // 关于ToolStripMenuItem1
+            // aboutToolStripMenuItem
             // 
-            this.关于ToolStripMenuItem1.Name = "关于ToolStripMenuItem1";
-            this.关于ToolStripMenuItem1.Size = new System.Drawing.Size(180, 24);
-            this.关于ToolStripMenuItem1.Text = "关于...";
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.aboutToolStripMenuItem.Text = "关于...";
             // 
             // MainWnd
             // 
@@ -101,10 +101,10 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip 菜单;
-        private System.Windows.Forms.ToolStripMenuItem 账户ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 添加账户ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem AccountStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AddAccountToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AboutStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 
