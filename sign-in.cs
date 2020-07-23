@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace E_mail_implements
@@ -14,6 +7,7 @@ namespace E_mail_implements
     {
         private bool isMatch;
         private int index;
+        private bool isLogInBtnPressed;
         public sign_in()
         {
             InitializeComponent();
@@ -22,7 +16,7 @@ namespace E_mail_implements
         private void sign_in_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (sign_in_combobox.Text != "" && password.Text != "" && pop3_server_address.Text != ""
-                && smtp_server_address.Text != "")//判断条件待补充
+                && smtp_server_address.Text != "" && isLogInBtnPressed || MainWnd.isLoggedIn)
             {
 
             }
@@ -36,12 +30,14 @@ namespace E_mail_implements
         {
             isMatch = false;
             index = 0;
+            isLogInBtnPressed = false;
             for (int i = 0; i <= MainWnd.account_index; i++)
                 sign_in_combobox.Items.Add(MainWnd.accounts[i].email_address);
         }
 
         private void sign_in_button_Click(object sender, EventArgs e)
         {
+            isLogInBtnPressed = true;
             if (automatic_log_in.CheckState == CheckState.Checked)
                 MainWnd.isAutomaticLogin = true;
             else
@@ -72,19 +68,9 @@ namespace E_mail_implements
             //添加socket连接部分的代码
 
 
-            this.Close();
-            //global::E_mail_implements.sign_in.ActiveForm.Hide();
-        }
 
-        /*
-        private void sign_in_combobox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            sign_in_combobox.Text = MainWnd.accounts[sign_in_combobox.SelectedIndex].email_address;
-            password.Text = MainWnd.accounts[sign_in_combobox.SelectedIndex].password;
-            pop3_server_address.Text = MainWnd.accounts[sign_in_combobox.SelectedIndex].pop3_server_address;
-            smtp_server_address.Text = MainWnd.accounts[sign_in_combobox.SelectedIndex].smtp_server_address;
+            Close();
         }
-        */
 
         private void sign_in_combobox_TextChanged(object sender, EventArgs e)
         {

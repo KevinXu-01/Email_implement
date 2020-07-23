@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace E_mail_implements
@@ -26,7 +19,7 @@ namespace E_mail_implements
         public static int account_index;//始终为账户的数量减1
         public static bool isAutomaticLogin;//判断是否自动登录
         public static int current_index;//当前使用的账户的索引
-
+        public static bool isLoggedIn;
         public MainWnd()
         {
             InitializeComponent();
@@ -48,6 +41,7 @@ namespace E_mail_implements
                 Close();
                 sign_in_wnd.ShowDialog();
                 Show();
+                isLoggedIn = true;
             }
             else
             {
@@ -82,6 +76,7 @@ namespace E_mail_implements
                     Hide();
                     sign_in_wnd.ShowDialog();
                     Show();
+                    isLoggedIn = true;
                 }
             }
         }
