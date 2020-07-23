@@ -33,6 +33,8 @@
             this.AddAccountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DisconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DisconnectAndDeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.菜单.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,7 +53,9 @@
             // AccountStripMenuItem
             // 
             this.AccountStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AddAccountToolStripMenuItem});
+            this.AddAccountToolStripMenuItem,
+            this.DisconnectToolStripMenuItem,
+            this.DisconnectAndDeleteToolStripMenuItem});
             this.AccountStripMenuItem.Name = "AccountStripMenuItem";
             this.AccountStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.AccountStripMenuItem.Text = "账户";
@@ -59,9 +63,9 @@
             // AddAccountToolStripMenuItem
             // 
             this.AddAccountToolStripMenuItem.Name = "AddAccountToolStripMenuItem";
-            this.AddAccountToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.AddAccountToolStripMenuItem.Size = new System.Drawing.Size(213, 24);
             this.AddAccountToolStripMenuItem.Text = "添加账户...";
-            this.AddAccountToolStripMenuItem.Click += new System.EventHandler(this.添加账户ToolStripMenuItem_Click);
+            this.AddAccountToolStripMenuItem.Click += new System.EventHandler(this.AddAccountToolStripMenuItem_Click);
             // 
             // AboutStripMenuItem
             // 
@@ -74,8 +78,22 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(115, 24);
             this.aboutToolStripMenuItem.Text = "关于...";
+            // 
+            // DisconnectToolStripMenuItem
+            // 
+            this.DisconnectToolStripMenuItem.Name = "DisconnectToolStripMenuItem";
+            this.DisconnectToolStripMenuItem.Size = new System.Drawing.Size(213, 24);
+            this.DisconnectToolStripMenuItem.Text = "断开连接...";
+            this.DisconnectToolStripMenuItem.Click += new System.EventHandler(this.DisconnectToolStripMenuItem_Click);
+            // 
+            // DisconnectAndDeleteToolStripMenuItem
+            // 
+            this.DisconnectAndDeleteToolStripMenuItem.Name = "DisconnectAndDeleteToolStripMenuItem";
+            this.DisconnectAndDeleteToolStripMenuItem.Size = new System.Drawing.Size(213, 24);
+            this.DisconnectAndDeleteToolStripMenuItem.Text = "断开连接并删除账户...";
+            this.DisconnectAndDeleteToolStripMenuItem.Click += new System.EventHandler(this.DisconnectAndDeleteToolStripMenuItem_Click);
             // 
             // MainWnd
             // 
@@ -105,6 +123,8 @@
         private System.Windows.Forms.ToolStripMenuItem AddAccountToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AboutStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DisconnectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DisconnectAndDeleteToolStripMenuItem;
     }
 }
 
