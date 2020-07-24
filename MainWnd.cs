@@ -133,9 +133,36 @@ namespace E_mail_implements
             accounts[account_index].pop3_server_address = null;
             accounts[account_index].smtp_server_address = null;
             account_index--;
+
             Hide();
             sign_in_wnd.ShowDialog();
             Show();
+        }
+
+        private void write_email_btn_MouseEnter(object sender, EventArgs e)
+        {
+            write_email_btn.BackColor = System.Drawing.Color.LightGray;
+        }
+
+        private void write_email_btn_MouseLeave(object sender, EventArgs e)
+        {
+            write_email_btn.BackColor = System.Drawing.Color.White;
+        }
+
+        private void inbox_btn_MouseEnter(object sender, EventArgs e)
+        {
+            inbox_btn.BackColor = System.Drawing.Color.LightGray;
+        }
+
+        private void inbox_btn_MouseLeave(object sender, EventArgs e)
+        {
+            inbox_btn.BackColor = System.Drawing.Color.White;
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            about_wnd about = new about_wnd();
+            about.ShowDialog();
         }
     }
 }

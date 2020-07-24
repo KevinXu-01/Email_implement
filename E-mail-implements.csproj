@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="about_wnd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="about_wnd.Designer.cs">
+      <DependentUpon>about_wnd.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainWnd.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +66,9 @@
     <Compile Include="sign-in.Designer.cs">
       <DependentUpon>sign-in.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="about_wnd.resx">
+      <DependentUpon>about_wnd.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainWnd.resx">
       <DependentUpon>MainWnd.cs</DependentUpon>
     </EmbeddedResource>
