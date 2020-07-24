@@ -107,7 +107,7 @@
             this.sign_in_button.Location = new System.Drawing.Point(140, 433);
             this.sign_in_button.Name = "sign_in_button";
             this.sign_in_button.Size = new System.Drawing.Size(69, 28);
-            this.sign_in_button.TabIndex = 8;
+            this.sign_in_button.TabIndex = 10;
             this.sign_in_button.Text = "登录";
             this.sign_in_button.UseVisualStyleBackColor = true;
             this.sign_in_button.Click += new System.EventHandler(this.sign_in_button_Click);
@@ -119,7 +119,7 @@
             this.smtp_server_address.Location = new System.Drawing.Point(74, 342);
             this.smtp_server_address.Name = "smtp_server_address";
             this.smtp_server_address.Size = new System.Drawing.Size(212, 26);
-            this.smtp_server_address.TabIndex = 10;
+            this.smtp_server_address.TabIndex = 8;
             // 
             // smtp_server_notice
             // 
