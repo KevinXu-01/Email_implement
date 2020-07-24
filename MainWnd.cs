@@ -156,6 +156,7 @@ namespace E_mail_implements
 
         private void DisconnectToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            isLoggedIn = false;
             //删除可能存在的控件
             //删除收件箱自定义控件
             for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
@@ -191,6 +192,7 @@ namespace E_mail_implements
 
         private void DisconnectAndDeleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            isLoggedIn = false;
             //删除可能存在的控件
             //删除收件箱自定义控件
             for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
@@ -321,7 +323,7 @@ namespace E_mail_implements
             delete_btn.UseVisualStyleBackColor = false;
             delete_btn.Click += new EventHandler(delete_btn_Click);
             delete_btn.MouseEnter += new EventHandler(delete_btn_MouseEnter);
-            delete_btn.MouseLeave += new EventHandler(delete_btn_MouseLeave);
+            //delete_btn.MouseLeave += new EventHandler(delete_btn_MouseLeave);
             details.Controls.Add(delete_btn);
 
             if (mails[index].hasFile == true)
