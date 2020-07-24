@@ -30,3 +30,4 @@ E:\Visual Studio Projects\E-mail-implements\obj\Debug\E-mail-implements.exe
 E:\Visual Studio Projects\E-mail-implements\obj\Debug\E-mail-implements.pdb
 E:\Visual Studio Projects\E-mail-implements\obj\Debug\E_mail_implements.sign_in.resources
 E:\Visual Studio Projects\E-mail-implements\obj\Debug\E_mail_implements.about_wnd.resources
+E:\Visual Studio Projects\E-mail-implements\obj\Debug\E-mail-implements.csproj.CopyComplete

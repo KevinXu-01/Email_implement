@@ -1,9 +1,18 @@
-﻿using System;
+﻿using email_overview_display;
+using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
 namespace E_mail_implements
 {
+    struct  mail
+    {
+        public string sender;//发送方
+        public string date;//日期
+        public string subject;//主题
+        public string content;//正文
+    }
     public struct Account
     {
         public string email_address;
@@ -19,7 +28,8 @@ namespace E_mail_implements
         public static int account_index;//始终为账户的数量减1
         public static bool isAutomaticLogin;//判断是否自动登录
         public static int current_index;//当前使用的账户的索引
-        public static bool isLoggedIn;
+        public static bool isLoggedIn; //判断是否已经登录，用于区分登录前打开登录界面(登录窗体关闭时退出程序)和登录后
+                                                       //添加账户时打开登录界面(登录窗体关闭时不退出程序)
         public MainWnd()
         {
             InitializeComponent();
@@ -164,5 +174,44 @@ namespace E_mail_implements
             about_wnd about = new about_wnd();
             about.ShowDialog();
         }
+
+        private void inbox_btn_Click(object sender, EventArgs e)
+        {
+            int numberOfEmails = 10;
+            mail[] mails = new mail[numberOfEmails];
+            for(int i = 0; i < numberOfEmails; i++)
+            {
+                Point point = new Point(98, 31 + 68 * (i - 1));
+                mails[i].sender = "xqg2000@qq.com";
+                mails[i].subject = "这是主题";
+                mails[i].date = "2020.07.24 18:40 GMT+8";
+                mails[i].content = "这是正文这是正文这是正文这是正文这是正文这是正文";
+                email_overview_display.email_overview_display_bg email = new email_overview_display.email_overview_display_bg();
+                email.sender_email.Text = mails[i].sender;
+                email.subject.Text = mails[i].subject;
+                email.content.Text = mails[i].content.Substring(0, 10);
+                email.Location = point;
+                this.Controls.Add(email);
+            }
+        }
+
+        private void email_overview_display_Click(object sender, EventArgs e)
+        {
+            //添加显示邮件内容的代码
+        }
+
+        private void write_email_btn_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
+            {
+                foreach (Control control in Controls)
+                {
+                    if (control is email_overview_display_bg)
+                        control.Dispose();
+                }
+            }
+        }
+
+
     }
 }

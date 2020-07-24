@@ -35,7 +35,6 @@
             this.DisconnectAndDeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
             this.inbox_btn = new System.Windows.Forms.Button();
             this.write_email_btn = new System.Windows.Forms.Button();
             this.菜单.SuspendLayout();
@@ -95,17 +94,9 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(115, 24);
             this.aboutToolStripMenuItem.Text = "关于...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(-2, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 12);
-            this.label1.TabIndex = 1;
             // 
             // inbox_btn
             // 
@@ -119,6 +110,7 @@
             this.inbox_btn.TabIndex = 2;
             this.inbox_btn.Text = "收件箱";
             this.inbox_btn.UseVisualStyleBackColor = false;
+            this.inbox_btn.Click += new System.EventHandler(this.inbox_btn_Click);
             this.inbox_btn.MouseEnter += new System.EventHandler(this.inbox_btn_MouseEnter);
             this.inbox_btn.MouseLeave += new System.EventHandler(this.inbox_btn_MouseLeave);
             // 
@@ -134,6 +126,7 @@
             this.write_email_btn.TabIndex = 3;
             this.write_email_btn.Text = "写邮件";
             this.write_email_btn.UseVisualStyleBackColor = false;
+            this.write_email_btn.Click += new System.EventHandler(this.write_email_btn_Click);
             this.write_email_btn.MouseEnter += new System.EventHandler(this.write_email_btn_MouseEnter);
             this.write_email_btn.MouseLeave += new System.EventHandler(this.write_email_btn_MouseLeave);
             // 
@@ -145,7 +138,6 @@
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.write_email_btn);
             this.Controls.Add(this.inbox_btn);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.菜单);
             this.MainMenuStrip = this.菜单;
             this.Name = "MainWnd";
@@ -169,7 +161,6 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem DisconnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem DisconnectAndDeleteToolStripMenuItem;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button inbox_btn;
         private System.Windows.Forms.Button write_email_btn;
     }
