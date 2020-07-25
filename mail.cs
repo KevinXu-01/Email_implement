@@ -33,22 +33,39 @@ namespace E_mail_implements
         {
             string reg = "(?<=(Date: ))[.\\s\\S]*?(?=(\n))";
             string[] a = Getunit(Envelop, reg);
+            if (a == null)
+            {
+                this.date = "";
+            }
+            else
             this.date = a[0];
         }
         public void setSubject(String Envelop)//获得主题
         {
             string reg = "(?<=(Subject: ))[.\\s\\S]*?(?=(\n))";
             string[] a = Getunit(Envelop, reg);
-            this.subject = a[0];
-            string temp = GetSingle(a[0], "(?<=(UTF-8\\?B\\?))[.\\s\\S]*?(?=(\\?=))");
-            if (temp!=null)
+            if (a == null)
             {
-                this.subject = ConvertFromBaseToUtf(temp);
+                this.subject = "";
             }
-            string temp2 = GetSingle(a[0], "(?<=(gb18030\\?B\\?))[.\\s\\S]*?(?=(\\?=))");
-            if (temp2 != null)
+            else
             {
-                this.subject = ConvertFromBaseToGB(temp2);
+                this.subject = a[0];
+                string temp = GetSingle(a[0], "(?<=(UTF-8\\?B\\?))[.\\s\\S]*?(?=(\\?=))");
+                if (temp != null)
+                {
+                    this.subject = ConvertFromBaseToUtf(temp);
+                }
+                string temp2 = GetSingle(a[0], "(?<=(gb18030\\?B\\?))[.\\s\\S]*?(?=(\\?=))");
+                if (temp2 != null)
+                {
+                    this.subject = ConvertFromBaseToGB(temp2);
+                }
+                string temp3 = GetSingle(a[0], "(?<=(GBK\\?B\\?))[.\\s\\S]*?(?=(\\?=))");
+                if (temp3 != null)
+                {
+                    this.subject = ConvertFromBaseToGB(temp3);
+                }
             }
         }
 
@@ -89,7 +106,7 @@ namespace E_mail_implements
                         this.content =b[0];//将正文的内容放进去
                         if (Regex.IsMatch(a[i], "Content-Transfer-Encoding: base64"))
                         {
-                            if (Regex.IsMatch(a[i], "gb"))
+                            if (Regex.IsMatch(a[i], "gb") || Regex.IsMatch(a[i], "GB"))
                             {
                                 this.content = ConvertFromBaseToGB(b[0]);
                             }
@@ -125,7 +142,7 @@ namespace E_mail_implements
                 this.content = a[0];
                 if (Regex.IsMatch(Envelop, "Content-Transfer-Encoding: base64"))
                 {
-                    if (Regex.IsMatch(Envelop, "gb10"))
+                    if (Regex.IsMatch(Envelop, "gb") || Regex.IsMatch(Envelop, "GB"))
                     {
                         this.content = ConvertFromBaseToGB(a[0]);
                     }
