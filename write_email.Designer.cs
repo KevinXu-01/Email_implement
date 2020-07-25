@@ -105,6 +105,7 @@
             this.send_btn.TabIndex = 7;
             this.send_btn.Text = "发送";
             this.send_btn.UseVisualStyleBackColor = true;
+            this.send_btn.Click += new System.EventHandler(this.send_btn_Click);
             // 
             // write_email
             // 
