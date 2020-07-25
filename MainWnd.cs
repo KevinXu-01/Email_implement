@@ -369,26 +369,34 @@ namespace E_mail_implements
         private void delete_btn_Click(object sender, EventArgs e)
         {
             Button temp = (Button)sender;
-            foreach(Control control in details.Controls)
-            {
-                if (control is Button && control.Name == temp.Name)
-                    control.Dispose();
-            }
-            ////////////////////////////////////////////////////////////////////////BUGS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            /*
+            //测试
+            int j = Convert.ToInt32(temp.Name) + 1;
+            email_overview_display_bg temp_overview_0 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(j - 2), false)[0];
+            email_overview_display_bg temp_overview_1 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(j - 1), false)[0];
+            label1.Text = temp_overview_0.Name;
+            label1.Text += temp_overview_1.Name;*/
+
+            ////////////////////////////////////////////////////////////////////////BUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //左侧重新排列
-            for (int i = Convert.ToInt32(temp.Name) + 1; i < numberOfEmails; i++)
+            for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails; i++)
             {
-                email_overview_display_bg temp_overview_0 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i - 1), true)[0];
-                email_overview_display_bg temp_overview_1 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i), true)[0];
+                email_overview_display_bg temp_overview_0 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i - 1), false)[0];
+                email_overview_display_bg temp_overview_1 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i), false)[0];
+                
                 temp_overview_1.sender_email.Text = temp_overview_0.sender_email.Text;
                 temp_overview_1.subject.Text = temp_overview_0.subject.Text;
                 temp_overview_1.content.Text = temp_overview_0.content.Text;
                 temp_overview_1.Location = temp_overview_0.Location;
-                temp_overview_1.Name = temp_overview_0.Name;
-                overview.Controls.Remove((email_overview_display_bg)overview.Controls.Find(Convert.ToString(i - 1), true)[0]);
-                overview.Controls.Add(temp_overview_1);
+                //temp_overview_1.Name = temp_overview_0.Name;
+                //temp_overview_1 = temp_overview_0;
+                //temp_overview_0.Dispose();
+                if(i == Convert.ToInt32(temp.Name))
+                    overview.Controls.Remove(temp_overview_0);
+                //overview.Controls.Add(temp_overview_1);
             }
-
+            
             //删除邮件
             for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails - 1; i++)
             {
