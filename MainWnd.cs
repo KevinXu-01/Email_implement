@@ -407,6 +407,7 @@ namespace E_mail_implements
 
             ////////////////////////////////////////////////////////////////////////BUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //左侧重新排列
+
             for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails; i++)
             {
                 email_overview_display_bg temp_overview_0 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i - 1), false)[0];

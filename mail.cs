@@ -31,9 +31,9 @@ namespace E_mail_implements
         }
         public void setDate(String Envelop)//匹配获得日期
         {
-            string reg = "(?<=(Date:))[.\\s\\S]*?(?=(\n))";
+            string reg = "(?<=(Date: ))[.\\s\\S]*?(?=(\n))";
             string[] a = Getunit(Envelop, reg);
-            this.date = a[1];
+            this.date = a[0];
         }
         public void setSubject(String Envelop)//获得主题
         {
@@ -49,6 +49,11 @@ namespace E_mail_implements
             if (temp2 != null)
             {
                 this.subject = ConvertFromBaseToGB(temp2);
+            }
+            string temp3 = GetSingle(a[0], "(?<=(GBK\\?B\\?))[.\\s\\S]*?(?=(\\?=))");
+            if (temp3 != null)
+            {
+                this.subject = ConvertFromBaseToGB(temp3);
             }
         }
 
@@ -74,7 +79,7 @@ namespace E_mail_implements
             this.hasFile = isMatch;
             if (hasFile)//如果有附件
             {
-                string r = "(?<=(Part))[.\\s\\S]*?(?=(Part))";
+                string r = "(?<=(--=))[.\\s\\S]*?(?=(--=))";
                 string[] a = Getunit(Envelop, r);
                 for (int i = 0; i < a.Count(); i++)
                 {
@@ -84,12 +89,12 @@ namespace E_mail_implements
                     if (Regex.IsMatch(a[i], text) && !Regex.IsMatch(a[i], file))
                     {
                         //提取文本，该文本为正文
-                        string con = "(?<=(\r\n\r\n))[.\\s\\S]*?(?=(\r\n--))";
+                        string con = "(?<=(\r\n\r\n))[.\\s\\S]*?(?=(\r\n))";
                         string[] b = Getunit(a[i], con);
                         this.content =b[0];//将正文的内容放进去
                         if (Regex.IsMatch(a[i], "Content-Transfer-Encoding: base64"))
                         {
-                            if (Regex.IsMatch(a[i], "gb"))
+                            if (Regex.IsMatch(a[i], "gb") || Regex.IsMatch(a[i], "GB"))
                             {
                                 this.content = ConvertFromBaseToGB(b[0]);
                             }
@@ -125,7 +130,7 @@ namespace E_mail_implements
                 this.content = a[0];
                 if (Regex.IsMatch(Envelop, "Content-Transfer-Encoding: base64"))
                 {
-                    if (Regex.IsMatch(Envelop, "gb10"))
+                    if (Regex.IsMatch(Envelop, "gb") || Regex.IsMatch(Envelop, "GB"))
                     {
                         this.content = ConvertFromBaseToGB(a[0]);
                     }

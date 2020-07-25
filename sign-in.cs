@@ -76,6 +76,7 @@ namespace E_mail_implements
                 MainWnd.hasAccount = null;
             }
 
+            /*
             //添加socket连接部分的代码
             TcpClient Server;
             NetworkStream StrmWtr;
@@ -113,7 +114,11 @@ namespace E_mail_implements
                 MainWnd.StrmRdr = StrmRdr;
                 MainWnd.numberOfEmails = getNum(StrmRdr.ReadLine());
                 //错误处理 
-
+            }
+            catch (InvalidOperationException err)
+            {
+                Console.WriteLine("ERROR: " + err.Message.ToString());
+            }*/
             //连接SMTP服务器
             Cursor c = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor; //置鼠标状态为等待
@@ -121,7 +126,7 @@ namespace E_mail_implements
 
             cmd = "HELO " + MainWnd.accounts[MainWnd.current_index].smtp_server_address + CRLF;
             SM.sendMessage(cmd);
-            
+
 
             cmd = "AUTH LOGIN" + CRLF;
             SM.sendMessage(cmd);
@@ -131,12 +136,6 @@ namespace E_mail_implements
 
             cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].password)) + CRLF;
             SM.sendMessage(cmd);
-
-            }
-            catch (InvalidOperationException err)
-            {
-                Console.WriteLine("ERROR: " + err.Message.ToString());
-            }
             Cursor.Current = c;
 
             Close();

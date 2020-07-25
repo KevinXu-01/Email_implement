@@ -27,6 +27,11 @@ namespace E_mail_implements
             {
                 this.Name = ConvertFromBaseToGB(temp2);
             }
+            string temp3 = GetSingle(this.Name, "(?<=(GBK\\?B\\?))[.\\s\\S]*?(?=(\\?=))");
+            if (temp3 != null)
+            {
+                this.Name = ConvertFromBaseToGB(temp3);
+            }
         }
         public String ConvertFromBaseToUtf(String s)
         {
@@ -41,7 +46,6 @@ namespace E_mail_implements
             byte[] temp = Convert.FromBase64String(s);
             result = Encoding.GetEncoding("gb18030").GetString(temp);
             return result;
-
         }
         private string GetSingle(string value, string regx)
         {
