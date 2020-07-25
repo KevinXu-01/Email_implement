@@ -40,7 +40,7 @@ namespace E_mail_implements
             try
             {
                 // Translate the passed message into ASCII and store it as a Byte array.
-                data = System.Text.Encoding.ASCII.GetBytes(message);
+                data = System.Text.Encoding.GetEncoding("gb2312").GetBytes(message);
 
                 // Get a client stream for reading and writing.
                 stream = SmtpClient.GetStream();
