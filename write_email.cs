@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Mail;
 
 namespace E_mail_implements
 {
@@ -15,6 +9,16 @@ namespace E_mail_implements
         public write_email()
         {
             InitializeComponent();
+        }
+
+        private void attach_btn_Click(object sender, EventArgs e)
+        {
+            MailMessage mmsg = new MailMessage();
+            OpenFileDialog openFile = new OpenFileDialog();
+            if (openFile.ShowDialog() == DialogResult.OK)
+            {
+                mmsg.Attachments.Add(new Attachment(openFile.FileName));
+            }
         }
     }
 }
