@@ -36,3 +36,17 @@ C:\Users\有花堪折直须折\source\repos\E-mail-implements\obj\Debug\E_mail_i
 C:\Users\有花堪折直须折\source\repos\E-mail-implements\obj\Debug\E_mail_implements.sign_in.resources
 C:\Users\有花堪折直须折\source\repos\E-mail-implements\obj\Debug\E_mail_implements.write_email.resources
 C:\Users\有花堪折直须折\source\repos\E-mail-implements\obj\Debug\E-mail-implements.csproj.CopyComplete
+C:\Users\Administrator\Source\Repos\E-mail-implements\bin\Debug\E-mail-implements.exe.config
+C:\Users\Administrator\Source\Repos\E-mail-implements\bin\Debug\E-mail-implements.exe
+C:\Users\Administrator\Source\Repos\E-mail-implements\bin\Debug\E-mail-implements.pdb
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E-mail-implements.csprojAssemblyReference.cache
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E_mail_implements.about_wnd.resources
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E_mail_implements.MainWnd.resources
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E_mail_implements.Properties.Resources.resources
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E_mail_implements.sign_in.resources
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E_mail_implements.write_email.resources
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E-mail-implements.csproj.GenerateResource.cache
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E-mail-implements.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\E-mail-implements\obj\Debug\E-mail-implements.csproj.CopyComplete
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E-mail-implements.exe
+C:\Users\Administrator\Source\Repos\E-mail-implements\obj\Debug\E-mail-implements.pdb
