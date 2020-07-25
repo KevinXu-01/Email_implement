@@ -111,29 +111,32 @@ namespace E_mail_implements
                 MainWnd.StrmRdr = StrmRdr;
                 MainWnd.numberOfEmails = getNum(StrmRdr.ReadLine());
                 //错误处理 
-
+          
             //连接SMTP服务器
              
-            MainWnd.SM.Connect(smtp_server_address.Text);
 
-            cmd = "HELO " + MainWnd.accounts[MainWnd.current_index].smtp_server_address + CRLF;
-                MainWnd.SM.sendMessage(cmd);
-            
-
-            cmd = "AUTH LOGIN" + CRLF;
-                MainWnd.SM.sendMessage(cmd);
-
-            cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].email_address)) + CRLF;
-                MainWnd.SM.sendMessage(cmd);
-
-            cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].password)) + CRLF;
-                MainWnd.SM.sendMessage(cmd);
 
             }
             catch (InvalidOperationException err)
             {
                 Console.WriteLine("ERROR: " + err.Message.ToString());
             }
+    
+            MainWnd.SM.Connect(smtp_server_address.Text);
+
+            cmd = "HELO " + MainWnd.accounts[MainWnd.current_index].smtp_server_address + CRLF;
+            MainWnd.SM.sendMessage(cmd);
+            
+
+            cmd = "AUTH LOGIN" + CRLF;
+            MainWnd.SM.sendMessage(cmd);
+
+            cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].email_address)) + CRLF;
+            MainWnd.SM.sendMessage(cmd);
+
+            cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].password)) + CRLF;
+            MainWnd.SM.sendMessage(cmd);
+
 
             Close();
         }
