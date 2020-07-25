@@ -5,18 +5,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Configuration;
+using System.Net.Sockets;
+using System.Text;
 using System.Windows.Forms;
 
 namespace E_mail_implements
 {
-    public struct mail
-    {
-        public string sender;//发送方
-        public string date;//日期
-        public string subject;//主题
-        public string content;//正文
-        public bool hasFile;//是否有附件（还没写）
-    }
+    
     public struct Account
     {
         public string email_address;
@@ -33,9 +28,10 @@ namespace E_mail_implements
         public static bool isAutomaticLogin;//判断是否自动登录
         public static int current_index;//当前使用的账户的索引
         public static bool isLoggedIn; //判断是否已经登录，用于区分登录前打开登录界面(登录窗体关闭时退出程序)和登录后
-                                                       //添加账户时打开登录界面(登录窗体关闭时不退出程序)
-        public static int numberOfEmails = 20;
-        public static mail[] mails = new mail[numberOfEmails];
+        public static NetworkStream StrmWtr;
+        public static StreamReader StrmRdr;//添加账户时打开登录界面(登录窗体关闭时不退出程序)
+        public static int numberOfEmails;
+        List<mail> mails;
         public MainWnd()
         {
             InitializeComponent();
@@ -97,8 +93,41 @@ namespace E_mail_implements
                     isLoggedIn = true;
                 }
             }
-        }
+            mails = new List<mail>();
+            
+            int count = numberOfEmails;
+            while (count > 0)
+            {
+                String cmdData;
+                byte[] szData;
+                string szTemp;
+                StringBuilder str = new StringBuilder();
+                const String CRLF = "\r\n";
+                cmdData = "RETR "+count + CRLF;
+                szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                StrmWtr.Write(szData, 0, szData.Length);
+                szTemp = getSatus(StrmRdr);
 
+                if (szTemp[0] != '-')
+                {
+                    while (szTemp != ".")
+                    {
+                        str.Append(szTemp + "\r\n");
+                        szTemp = StrmRdr.ReadLine();
+                    }
+                }
+
+                String a = str.ToString();
+                mail mail = new mail(a);
+               mails.Add(mail);
+                count--;
+            }
+        }
+        static String getSatus(StreamReader r)
+        {
+            String ret = r.ReadLine();
+            return ret;
+        }
         private void MainWnd_FormClosing(object sender, FormClosingEventArgs e)
         {
             if(hasAccount != null)
@@ -271,19 +300,19 @@ namespace E_mail_implements
             for(int i = 0; i < numberOfEmails; i++)
             {
                 Point point = new Point(0, 68 * i);
-                
-                /////
-                mails[i].sender = "xqg2000@qq.com";
-                mails[i].subject = "这是主题";
-                mails[i].date = "2020.07.24 18:40 GMT+8";
-                //for (int j = 0; j <= 40; j++)
-                    mails[i].content += "这是正文" + Convert.ToString(i) + "\n";
-                mails[i].hasFile = true;
+                 
                 email_overview_display_bg email_overview = new email_overview_display_bg();
                 email_overview.Name = Convert.ToString(i);//i从0开始
                 email_overview.sender_email.Text = mails[i].sender;
                 email_overview.subject.Text = mails[i].subject;
-                email_overview.content.Text = mails[i].content.Substring(0, 5);
+                if (mails[i].content.Length > 5)
+                {
+                    email_overview.content.Text = mails[i].content.Substring(0, 5);
+                }
+                else
+                {
+                    email_overview.content.Text = mails[i].content;
+                }
                 email_overview.Location = point;
                 email_overview.Click += new EventHandler(email_overview_display_Click);
                 overview.Controls.Add(email_overview);
@@ -328,9 +357,7 @@ namespace E_mail_implements
 
             if (mails[index].hasFile == true)
             {
-                List<int> files = new List<int>();//附件列表
-                files.Add(index);
-                files.Add(index + 1);
+                List<Mail_file> files = mails[index].files;//附件列表
                 Label attachment_notice = new Label();
 
                 //
@@ -351,7 +378,7 @@ namespace E_mail_implements
                 {
                     LinkLabel attachments = new LinkLabel();
 
-                    attachments.Text = Convert.ToString(files[i]);
+                    attachments.Text = Convert.ToString(files[i].Name);
                     //
                     // attachments
                     //

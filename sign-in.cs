@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Net.Sockets;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace E_mail_implements
@@ -66,12 +70,78 @@ namespace E_mail_implements
             }
 
             //添加socket连接部分的代码
+            TcpClient Server;
+            NetworkStream StrmWtr;
+            StreamReader StrmRdr;
+            byte[] szData;
+            String cmdData;
+            const String CRLF = "\r\n";
+            Server = new TcpClient(MainWnd.accounts[MainWnd.account_index].pop3_server_address, 110);
+            try
+            {
+                StrmWtr = Server.GetStream();
+                StrmRdr = new StreamReader(Server.GetStream());
+                
+                    cmdData = "USER " + sign_in_combobox.Text + CRLF;
+                    szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                    StrmWtr.Write(szData, 0, szData.Length);
+                    StrmRdr.ReadLine();
+                    cmdData = "PASS " + password.Text + CRLF;
+                    szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                    StrmWtr.Write(szData, 0, szData.Length);
+                    StrmRdr.ReadLine();
+                    cmdData = "STAT" + CRLF;
+                    szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                    StrmWtr.Write(szData, 0, szData.Length);
+                    string s = StrmRdr.ReadLine();
+                    Console.WriteLine(s);
+                    if (s[0] == '-')
+                    {
+                        MessageBox.Show("POP3连接时出错，请检查您的账户和授权码");
+                    return;
+                    }
+                   
+                
+                MainWnd.StrmWtr = StrmWtr;
+                MainWnd.StrmRdr = StrmRdr;
+                MainWnd.numberOfEmails = getNum(StrmRdr.ReadLine());
+                //错误处理 
 
 
+            }
+            catch (InvalidOperationException err)
+            {
+                Console.WriteLine("ERROR: " + err.Message.ToString());
+            }
 
             Close();
         }
+        public int getNum(String Envelop)//获得主题
+        {
+            string reg = "(?<=( ))[.\\s\\S]*?(?=( ))";
+            string a = GetSingle(Envelop, reg);
+            return int.Parse(a);
+        }
+        private string GetSingle(string value, string regx)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+            bool isMatch = Regex.IsMatch(value, regx);
+            if (!isMatch)
+            {
+                return null;
+            }
+            MatchCollection matchCol = Regex.Matches(value, regx);
 
+            string result = matchCol[0].Value;
+
+            return result;
+        }
+        static String getSatus(StreamReader r)
+        {
+            String ret = r.ReadLine();
+            return ret;
+        }
         private void sign_in_combobox_TextChanged(object sender, EventArgs e)
         {
             isMatch = false;
