@@ -57,6 +57,8 @@
       <DependentUpon>about_wnd.cs</DependentUpon>
     </Compile>
     <Compile Include="SmtpMail.cs" />
+    <Compile Include="mail.cs" />
+    <Compile Include="mail_file.cs" />
     <Compile Include="MainWnd.cs">
       <SubType>Form</SubType>
     </Compile>
