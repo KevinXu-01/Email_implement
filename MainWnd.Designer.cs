@@ -68,7 +68,6 @@
             this.AccountStripMenuItem.Name = "AccountStripMenuItem";
             this.AccountStripMenuItem.Size = new System.Drawing.Size(48, 21);
             this.AccountStripMenuItem.Text = "账户";
-            this.AccountStripMenuItem.Click += new System.EventHandler(this.AccountStripMenuItem_Click);
             // 
             // AddAccountToolStripMenuItem
             // 
