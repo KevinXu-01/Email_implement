@@ -95,7 +95,6 @@
             this.attach_btn.TabIndex = 4;
             this.attach_btn.Text = "添加附件";
             this.attach_btn.UseVisualStyleBackColor = true;
-            this.attach_btn.Click += new System.EventHandler(this.attach_btn_Click);
             // 
             // send_btn
             // 
