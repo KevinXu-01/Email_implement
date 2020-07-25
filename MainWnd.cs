@@ -33,6 +33,7 @@ namespace E_mail_implements
         public static StreamReader StrmRdr;//添加账户时打开登录界面(登录窗体关闭时不退出程序)
         public static int numberOfEmails;
         List<mail> mails;
+        List<email_overview_display_bg> overviews;
         public MainWnd()
         {
             InitializeComponent();
@@ -179,7 +180,6 @@ namespace E_mail_implements
             Date.Text = null;
             content.Text = null;
 
-            //添加删除信件编辑代码
             sign_in sign_in_wnd = new sign_in();
             sign_in_wnd.ShowDialog();
         }
@@ -210,9 +210,6 @@ namespace E_mail_implements
             sender_email.Text = null;
             Date.Text = null;
             content.Text = null;
-
-            //添加删除信件编辑代码
-
 
             sign_in sign_in_wnd = new sign_in();
             Hide();
@@ -246,11 +243,6 @@ namespace E_mail_implements
             sender_email.Text = null;
             Date.Text = null;
             content.Text = null;
-
-
-            //添加删除信件编辑部分控件的代码
-
-
 
             sign_in sign_in_wnd = new sign_in();
 
@@ -298,6 +290,7 @@ namespace E_mail_implements
 
         private void inbox_btn_Click(object sender, EventArgs e)
         {
+            overviews = new List<email_overview_display_bg>();
             for(int i = 0; i < numberOfEmails; i++)
             {
                 Point point = new Point(0, 68 * i);
@@ -316,6 +309,8 @@ namespace E_mail_implements
                 }
                 email_overview.Location = point;
                 email_overview.Click += new EventHandler(email_overview_display_Click);
+                //overview是panel，overviews是list
+                overviews.Add(email_overview);
                 overview.Controls.Add(email_overview);
             }
         }
@@ -353,7 +348,7 @@ namespace E_mail_implements
             delete_btn.UseVisualStyleBackColor = false;
             delete_btn.Click += new EventHandler(delete_btn_Click);
             delete_btn.MouseEnter += new EventHandler(delete_btn_MouseEnter);
-            //delete_btn.MouseLeave += new EventHandler(delete_btn_MouseLeave);
+            delete_btn.MouseLeave += new EventHandler(delete_btn_MouseLeave);
             details.Controls.Add(delete_btn);
 
             if (mails[index].hasFile == true)
@@ -379,16 +374,16 @@ namespace E_mail_implements
                 {
                     LinkLabel attachments = new LinkLabel();
 
-                    attachments.Text = Convert.ToString(files[i].Name);
                     //
                     // attachments
                     //
                     attachments.AutoSize = true;
+                    attachments.Text = Convert.ToString(files[i].Name);
                     attachments.Font = new Font("微软雅黑", 10.5F, FontStyle.Regular, GraphicsUnit.Point, (byte)134);
                     attachments.Location = new Point(14, attachment_notice.Location.Y + attachment_notice.Size.Height + i * 20);
-                    attachments.Name = "attachments";
+                    attachments.Name = Convert.ToString(index) + "-" + Convert.ToString(i);
                     attachments.Size = new Size(0, 20);
-
+                    attachments.Click += new EventHandler(linkLabel_LinkClicked);
                     details.Controls.Add(attachments);
                 }
             }
@@ -397,48 +392,27 @@ namespace E_mail_implements
         private void delete_btn_Click(object sender, EventArgs e)
         {
             Button temp = (Button)sender;
-
-            /*
-            //测试
-            int j = Convert.ToInt32(temp.Name) + 1;
-            email_overview_display_bg temp_overview_0 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(j - 2), false)[0];
-            email_overview_display_bg temp_overview_1 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(j - 1), false)[0];
-            label1.Text = temp_overview_0.Name;
-            label1.Text += temp_overview_1.Name;*/
-
-            ////////////////////////////////////////////////////////////////////////BUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //左侧重新排列
-
-            for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails; i++)
-            {
-                email_overview_display_bg temp_overview_0 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i - 1), false)[0];
-                email_overview_display_bg temp_overview_1 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i), false)[0];
-                
-                temp_overview_1.sender_email.Text = temp_overview_0.sender_email.Text;
-                temp_overview_1.subject.Text = temp_overview_0.subject.Text;
-                temp_overview_1.content.Text = temp_overview_0.content.Text;
-                temp_overview_1.Location = temp_overview_0.Location;
-                //temp_overview_1.Name = temp_overview_0.Name;
-                //temp_overview_1 = temp_overview_0;
-                //temp_overview_0.Dispose();
-                if(i == Convert.ToInt32(temp.Name))
-                    overview.Controls.Remove(temp_overview_0);
-                //overview.Controls.Add(temp_overview_1);
-            }
-            
-            //删除邮件
+            int index = Convert.ToInt32(temp.Name);
+            email_overview_display_bg tmp = new email_overview_display_bg();
+            tmp.Name = overviews[index].Name;
+            tmp.Location = overviews[index].Location;
+            //重新排列自定义控件
             for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails - 1; i++)
             {
-                mails[i] = mails[i + 1];
+                email_overview_display_bg tmp_1 = new email_overview_display_bg();
+                tmp_1.Name = overviews[i + 1].Name;
+                tmp_1.Location = overviews[i + 1].Location;
+                overviews[i + 1].Name = tmp.Name;
+                overviews[i + 1].Location = tmp.Location;
+                tmp.Name = tmp_1.Name;
+                tmp.Location = tmp_1.Location;
             }
-            mails[numberOfEmails - 1].sender = null;
-            mails[numberOfEmails - 1].subject = null;
-            mails[numberOfEmails - 1].date = null;
-            mails[numberOfEmails - 1].content = null;
-            mails[numberOfEmails - 1].hasFile = false;
-            numberOfEmails--;
 
+            //删除index处的自定义控件
+            overviews.RemoveAt(index);
 
+            //删除邮件
+            mails.RemoveAt(index);
 
             //将右侧内容清空
             for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
@@ -454,16 +428,10 @@ namespace E_mail_implements
             Date.Text = null;
             content.Text = null;
 
-
-            /*
-            //删除自定义控件
-            foreach (Control control in overview.Controls)
-            {
-                if (control is email_overview_display_bg && control.Name == temp.Name)
-                    control.Dispose();
-            }
-            */
-
+            //刷新自定义控件
+            overview.Controls.Clear();
+            for (int i = 0; i < overviews.Count(); i++)
+                overview.Controls.Add(overviews[i]);
         }
         private void delete_btn_MouseEnter(object sender, EventArgs e)
         {
@@ -483,9 +451,27 @@ namespace E_mail_implements
             write_email_wnd.ShowDialog();
         }
 
-        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+
+        private void linkLabel_LinkClicked(object sender, EventArgs e)
         {
-            
+            LinkLabel temp = (LinkLabel)sender;
+            int indexOfEmail, indexOfFile;
+            indexOfEmail = Convert.ToInt32(temp.Name.Split('-')[0]);
+            indexOfFile =Convert.ToInt32(temp.Name.Split('-')[1]);
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.FileName = mails[indexOfEmail].files[indexOfFile].Name;
+            saveFile.Filter = "所有文件(*.*)|*.*";
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                //创建一个文件流对象，用于写文件
+                FileStream file = new FileStream(saveFile.FileName, FileMode.Create);
+                //创建一个与文件流对象相对应的二进制写入流对象
+                BinaryWriter binaryWriter = new BinaryWriter(file);
+                binaryWriter.Write(Convert.FromBase64String(mails[indexOfEmail].files[indexOfFile].BaseCode));
+                //关闭所有文件流对象
+                binaryWriter.Close();
+                file.Close();
+            }
         }
     }
 }
