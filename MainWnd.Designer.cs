@@ -49,13 +49,13 @@
             // 
             // 菜单
             // 
-            this.菜单.Font = new System.Drawing.Font("Microsoft YaHei UI", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.菜单.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.菜单.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AccountStripMenuItem,
             this.AboutStripMenuItem});
             this.菜单.Location = new System.Drawing.Point(0, 0);
             this.菜单.Name = "菜单";
-            this.菜单.Size = new System.Drawing.Size(1264, 28);
+            this.菜单.Size = new System.Drawing.Size(1264, 25);
             this.菜单.TabIndex = 0;
             this.菜单.Text = "账户";
             // 
@@ -66,27 +66,27 @@
             this.DisconnectToolStripMenuItem,
             this.DisconnectAndDeleteToolStripMenuItem});
             this.AccountStripMenuItem.Name = "AccountStripMenuItem";
-            this.AccountStripMenuItem.Size = new System.Drawing.Size(49, 24);
+            this.AccountStripMenuItem.Size = new System.Drawing.Size(48, 21);
             this.AccountStripMenuItem.Text = "账户";
             // 
             // AddAccountToolStripMenuItem
             // 
             this.AddAccountToolStripMenuItem.Name = "AddAccountToolStripMenuItem";
-            this.AddAccountToolStripMenuItem.Size = new System.Drawing.Size(213, 24);
+            this.AddAccountToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
             this.AddAccountToolStripMenuItem.Text = "添加账户...";
             this.AddAccountToolStripMenuItem.Click += new System.EventHandler(this.AddAccountToolStripMenuItem_Click);
             // 
             // DisconnectToolStripMenuItem
             // 
             this.DisconnectToolStripMenuItem.Name = "DisconnectToolStripMenuItem";
-            this.DisconnectToolStripMenuItem.Size = new System.Drawing.Size(213, 24);
+            this.DisconnectToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
             this.DisconnectToolStripMenuItem.Text = "断开连接...";
             this.DisconnectToolStripMenuItem.Click += new System.EventHandler(this.DisconnectToolStripMenuItem_Click);
             // 
             // DisconnectAndDeleteToolStripMenuItem
             // 
             this.DisconnectAndDeleteToolStripMenuItem.Name = "DisconnectAndDeleteToolStripMenuItem";
-            this.DisconnectAndDeleteToolStripMenuItem.Size = new System.Drawing.Size(213, 24);
+            this.DisconnectAndDeleteToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
             this.DisconnectAndDeleteToolStripMenuItem.Text = "断开连接并删除账户...";
             this.DisconnectAndDeleteToolStripMenuItem.Click += new System.EventHandler(this.DisconnectAndDeleteToolStripMenuItem_Click);
             // 
@@ -95,13 +95,13 @@
             this.AboutStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
             this.AboutStripMenuItem.Name = "AboutStripMenuItem";
-            this.AboutStripMenuItem.Size = new System.Drawing.Size(49, 24);
+            this.AboutStripMenuItem.Size = new System.Drawing.Size(48, 21);
             this.AboutStripMenuItem.Text = "关于";
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(115, 24);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutToolStripMenuItem.Text = "关于...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
