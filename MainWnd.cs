@@ -212,6 +212,9 @@ namespace E_mail_implements
             }
         }
 
+        private void AccountStripMenuItem_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }
