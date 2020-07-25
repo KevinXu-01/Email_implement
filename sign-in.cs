@@ -17,8 +17,6 @@ namespace E_mail_implements
         private String cmd;
         private String CRLF = "\r\n";
 
-        public static SmtpMail SM = new SmtpMail();
-
         public sign_in()
         {
             InitializeComponent();
@@ -105,7 +103,7 @@ namespace E_mail_implements
                     if (s[0] == '-')
                     {
                         MessageBox.Show("POP3连接时出错，请检查您的账户和授权码");
-                    return;
+                        return;
                     }
                    
                 
@@ -115,29 +113,27 @@ namespace E_mail_implements
                 //错误处理 
 
             //连接SMTP服务器
-            Cursor c = Cursor.Current;
-            Cursor.Current = Cursors.WaitCursor; //置鼠标状态为等待
-            SM.Connect(MainWnd.accounts[MainWnd.current_index].smtp_server_address);
+             
+            MainWnd.SM.Connect(smtp_server_address.Text);
 
             cmd = "HELO " + MainWnd.accounts[MainWnd.current_index].smtp_server_address + CRLF;
-            SM.sendMessage(cmd);
+                MainWnd.SM.sendMessage(cmd);
             
 
             cmd = "AUTH LOGIN" + CRLF;
-            SM.sendMessage(cmd);
+                MainWnd.SM.sendMessage(cmd);
 
             cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].email_address)) + CRLF;
-            SM.sendMessage(cmd);
+                MainWnd.SM.sendMessage(cmd);
 
             cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].password)) + CRLF;
-            SM.sendMessage(cmd);
+                MainWnd.SM.sendMessage(cmd);
 
             }
             catch (InvalidOperationException err)
             {
                 Console.WriteLine("ERROR: " + err.Message.ToString());
             }
-            Cursor.Current = c;
 
             Close();
         }
