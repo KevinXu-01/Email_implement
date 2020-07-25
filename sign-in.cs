@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Net.Sockets;
+using System.IO;
 
 namespace E_mail_implements
 {
@@ -8,6 +10,11 @@ namespace E_mail_implements
         private bool isMatch;
         private int index;
         private bool isLogInBtnPressed;
+        private String cmd;
+        private String CRLF = "\r\n";
+
+        public static SmtpMail SM = new SmtpMail();
+
         public sign_in()
         {
             InitializeComponent();
@@ -66,8 +73,25 @@ namespace E_mail_implements
             }
 
             //添加socket连接部分的代码
+            //连接SMTP服务器
+            Cursor c = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor; //置鼠标状态为等待
+            SM.Connect(MainWnd.accounts[MainWnd.current_index].smtp_server_address);
 
+            cmd = "HELO " + MainWnd.accounts[MainWnd.current_index].smtp_server_address + CRLF;
+            SM.sendMessage(cmd);
+            
 
+            cmd = "AUTH LOGIN" + CRLF;
+            SM.sendMessage(cmd);
+
+            cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].email_address)) + CRLF;
+            SM.sendMessage(cmd);
+
+            cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].password)) + CRLF;
+            SM.sendMessage(cmd);
+
+            Cursor.Current = c;
 
             Close();
         }
