@@ -154,7 +154,6 @@
             this.sign_in_combobox.Name = "sign_in_combobox";
             this.sign_in_combobox.Size = new System.Drawing.Size(212, 28);
             this.sign_in_combobox.TabIndex = 12;
-            this.sign_in_combobox.TextChanged += sign_in_combobox_TextChanged;
             // 
             // sign_in
             // 
