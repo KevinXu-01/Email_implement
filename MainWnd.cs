@@ -132,7 +132,11 @@ namespace E_mail_implements
         }
         private void MainWnd_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(hasAccount != null)
+            string cmdData = "quit" + "\r\n";
+            byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+            StrmWtr.Write(szData, 0, szData.Length);
+            Console.WriteLine(StrmRdr.ReadLine());
+            if (hasAccount != null)
             {
                 File.Delete(@"accounts.dat");
                 FileStream file = new FileStream(@"accounts.dat", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -394,44 +398,56 @@ namespace E_mail_implements
             Button temp = (Button)sender;
             int index = Convert.ToInt32(temp.Name);
             email_overview_display_bg tmp = new email_overview_display_bg();
-            tmp.Name = overviews[index].Name;
-            tmp.Location = overviews[index].Location;
-            //重新排列自定义控件
-            for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails - 1; i++)
+
+            string cmdData = "dele "+(numberOfEmails-index).ToString() + "\r\n";
+            byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+            StrmWtr.Write(szData, 0, szData.Length);
+            if (StrmRdr.ReadLine()[0] == '+')
             {
-                email_overview_display_bg tmp_1 = new email_overview_display_bg();
-                tmp_1.Name = overviews[i + 1].Name;
-                tmp_1.Location = overviews[i + 1].Location;
-                overviews[i + 1].Name = tmp.Name;
-                overviews[i + 1].Location = tmp.Location;
-                tmp.Name = tmp_1.Name;
-                tmp.Location = tmp_1.Location;
-            }
-
-            //删除index处的自定义控件
-            overviews.RemoveAt(index);
-
-            //删除邮件
-            mails.RemoveAt(index);
-
-            //将右侧内容清空
-            for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
-            {
-                foreach (Control control in details.Controls)
+                tmp.Name = overviews[index].Name;
+                tmp.Location = overviews[index].Location;
+                //重新排列自定义控件
+                for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails - 1; i++)
                 {
-                    if (control is LinkLabel || (control is Label && control.Text == "附件列表："))
-                        control.Dispose();
+                    email_overview_display_bg tmp_1 = new email_overview_display_bg();
+                    tmp_1.Name = overviews[i + 1].Name;
+                    tmp_1.Location = overviews[i + 1].Location;
+                    overviews[i + 1].Name = tmp.Name;
+                    overviews[i + 1].Location = tmp.Location;
+                    tmp.Name = tmp_1.Name;
+                    tmp.Location = tmp_1.Location;
                 }
-            }
-            subject.Text = null;
-            sender_email.Text = null;
-            Date.Text = null;
-            content.Text = null;
 
-            //刷新自定义控件
-            overview.Controls.Clear();
-            for (int i = 0; i < overviews.Count(); i++)
-                overview.Controls.Add(overviews[i]);
+                //删除index处的自定义控件
+                overviews.RemoveAt(index);
+
+                //删除邮件
+                mails.RemoveAt(index);
+
+                //将右侧内容清空
+                for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
+                {
+                    foreach (Control control in details.Controls)
+                    {
+                        if (control is LinkLabel || (control is Label && control.Text == "附件列表："))
+                            control.Dispose();
+                    }
+                }
+                subject.Text = null;
+                sender_email.Text = null;
+                Date.Text = null;
+                content.Text = null;
+
+                //刷新自定义控件
+                overview.Controls.Clear();
+                for (int i = 0; i < overviews.Count(); i++)
+                    overview.Controls.Add(overviews[i]);
+                MessageBox.Show("已添加删除标记，客户端关闭后即可删除");
+            }
+            else
+            {
+                MessageBox.Show("删除失败");
+            }
         }
         private void delete_btn_MouseEnter(object sender, EventArgs e)
         {
