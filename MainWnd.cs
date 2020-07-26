@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Configuration;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace E_mail_implements
@@ -34,6 +35,8 @@ namespace E_mail_implements
         public static int numberOfEmails;
         List<mail> mails;
         List<email_overview_display_bg> overviews;
+        private String cmd;
+        private const String CRLF = "\r\n";
         public MainWnd()
         {
             InitializeComponent();
@@ -93,38 +96,147 @@ namespace E_mail_implements
                     sign_in_wnd.ShowDialog();
                     Show();
                     isLoggedIn = true;
-                }
-            }
-            mails = new List<mail>();
-            
-            int count = numberOfEmails;
-            while (count > 0)
-            {
-                String cmdData;
-                byte[] szData;
-                string szTemp;
-                StringBuilder str = new StringBuilder();
-                const String CRLF = "\r\n";
-                cmdData = "RETR "+count + CRLF;
-                szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
-                StrmWtr.Write(szData, 0, szData.Length);
-                szTemp = getSatus(StrmRdr);
+                    mails = new List<mail>();
 
-                if (szTemp[0] != '-')
-                {
-                    while (szTemp != ".")
+                    int count = numberOfEmails;
+                    while (count > 0)
                     {
-                        str.Append(szTemp + "\r\n");
-                        szTemp = StrmRdr.ReadLine();
+                        String cmdData;
+                        byte[] szData;
+                        string szTemp;
+                        StringBuilder str = new StringBuilder();
+                        const String CRLF = "\r\n";
+                        cmdData = "RETR " + count + CRLF;
+                        szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                        StrmWtr.Write(szData, 0, szData.Length);
+                        szTemp = getSatus(StrmRdr);
+
+                        if (szTemp[0] != '-')
+                        {
+                            while (szTemp != ".")
+                            {
+                                str.Append(szTemp + "\r\n");
+                                szTemp = StrmRdr.ReadLine();
+                            }
+                        }
+
+                        String a = str.ToString();
+                        mail mail = new mail(a);
+                        mails.Add(mail);
+                        count--;
                     }
                 }
+                else 
+                {
+                    //添加socket连接部分的代码
+                    TcpClient Server;
+                    NetworkStream StrmWtr;
+                    StreamReader StrmRdr;
+                    byte[] szData;
+                    String cmdData;
+                    const String CRLF = "\r\n";
+                    Server = new TcpClient(accounts[current_index].pop3_server_address, 110);
+                    try
+                    {
+                        StrmWtr = Server.GetStream();
+                        StrmRdr = new StreamReader(Server.GetStream());
 
-                String a = str.ToString();
-                mail mail = new mail(a);
-               mails.Add(mail);
-                count--;
+                        cmdData = "USER " + accounts[current_index].email_address + CRLF;
+                        szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                        StrmWtr.Write(szData, 0, szData.Length);
+                        StrmRdr.ReadLine();
+                        cmdData = "PASS " + accounts[current_index].password + CRLF;
+                        szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                        StrmWtr.Write(szData, 0, szData.Length);
+                        StrmRdr.ReadLine();
+                        cmdData = "STAT" + CRLF;
+                        szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                        StrmWtr.Write(szData, 0, szData.Length);
+                        string s = StrmRdr.ReadLine();
+                        Console.WriteLine(s);
+                        if (s[0] == '-')
+                        {
+                            MessageBox.Show("POP3连接时出错，请检查您的账户和授权码");
+                            return;
+                        }
+
+
+                        MainWnd.StrmWtr = StrmWtr;
+                        MainWnd.StrmRdr = StrmRdr;
+                        numberOfEmails = getNum(StrmRdr.ReadLine());
+                    }
+                    catch (InvalidOperationException err)
+                    {
+                        Console.WriteLine("ERROR: " + err.Message.ToString());
+                    }
+
+
+                    //SMTP
+                    SM.Connect(accounts[current_index].smtp_server_address);
+                    cmd = "HELO " + accounts[current_index].smtp_server_address + CRLF;
+                    SM.sendMessage(cmd);
+                    cmd = "AUTH LOGIN" + CRLF;
+                    SM.sendMessage(cmd);
+                    cmd = Convert.ToBase64String(Encoding.ASCII.GetBytes(accounts[current_index].email_address)) + CRLF;
+                    SM.sendMessage(cmd);
+                    cmd = Convert.ToBase64String(Encoding.ASCII.GetBytes(accounts[current_index].password)) + CRLF;
+                    SM.sendMessage(cmd);
+
+
+
+                    mails = new List<mail>();
+                    int count = numberOfEmails;
+                    while (count > 0)
+                    {
+                        string cmdData_1;
+                        byte[] szData_1;
+                        string szTemp;
+                        StringBuilder str = new StringBuilder();
+                        const String CRLF_1 = "\r\n";
+                        cmdData_1 = "RETR " + count + CRLF_1;
+                        szData_1 = Encoding.ASCII.GetBytes(cmdData_1.ToCharArray());
+                        MainWnd.StrmWtr.Write(szData_1, 0, szData_1.Length);
+                        szTemp = getSatus(MainWnd.StrmRdr);
+
+                        if (szTemp[0] != '-')
+                        {
+                            while (szTemp != ".")
+                            {
+                                str.Append(szTemp + "\r\n");
+                                szTemp = MainWnd.StrmRdr.ReadLine();
+                            }
+                        }
+
+                        String a = str.ToString();
+                        mail mail = new mail(a);
+                        mails.Add(mail);
+                        count--;
+                    }
+                }
             }
         }
+        public int getNum(String Envelop)//获得主题
+        {
+            string reg = "(?<=( ))[.\\s\\S]*?(?=( ))";
+            string a = GetSingle(Envelop, reg);
+            return int.Parse(a);
+        }
+        private string GetSingle(string value, string regx)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+            bool isMatch = Regex.IsMatch(value, regx);
+            if (!isMatch)
+            {
+                return null;
+            }
+            MatchCollection matchCol = Regex.Matches(value, regx);
+
+            string result = matchCol[0].Value;
+
+            return result;
+        }
+
         static String getSatus(StreamReader r)
         {
             String ret = r.ReadLine();

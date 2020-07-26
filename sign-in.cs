@@ -4,8 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Net.Sockets;
-using System.IO;
+
 
 namespace E_mail_implements
 {
@@ -15,7 +14,7 @@ namespace E_mail_implements
         private int index;
         private bool isLogInBtnPressed;
         private String cmd;
-        private String CRLF = "\r\n";
+        private const String CRLF = "\r\n";
 
         public sign_in()
         {
@@ -81,7 +80,7 @@ namespace E_mail_implements
             byte[] szData;
             String cmdData;
             const String CRLF = "\r\n";
-            Server = new TcpClient(MainWnd.accounts[MainWnd.account_index].pop3_server_address, 110);
+            Server = new TcpClient(pop3_server_address.Text, 110);
             try
             {
                 StrmWtr = Server.GetStream();
