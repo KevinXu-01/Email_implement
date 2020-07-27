@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Configuration;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -126,9 +125,9 @@ namespace E_mail_implements
                         count--;
                     }
                 }
-                else 
+                else //自动登录，先连接
                 {
-                    //添加socket连接部分的代码
+                    //POP3_socket连接
                     TcpClient Server;
                     NetworkStream StrmWtr;
                     StreamReader StrmRdr;
@@ -153,7 +152,7 @@ namespace E_mail_implements
                         szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
                         StrmWtr.Write(szData, 0, szData.Length);
                         string s = StrmRdr.ReadLine();
-                        Console.WriteLine(s);
+                        //Console.WriteLine(s);
                         if (s[0] == '-')
                         {
                             MessageBox.Show("POP3连接时出错，请检查您的账户和授权码");
@@ -244,10 +243,13 @@ namespace E_mail_implements
         }
         private void MainWnd_FormClosing(object sender, FormClosingEventArgs e)
         {
-            string cmdData = "quit" + "\r\n";
-            byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
-            StrmWtr.Write(szData, 0, szData.Length);
-            Console.WriteLine(StrmRdr.ReadLine());
+            if (isLoggedIn == true)
+            {
+                string cmdData = "quit" + "\r\n";
+                byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                StrmWtr.Write(szData, 0, szData.Length);
+                //Console.WriteLine(StrmRdr.ReadLine());
+            }
             if (hasAccount != null)
             {
                 File.Delete(@"accounts.dat");
@@ -327,6 +329,13 @@ namespace E_mail_implements
             Date.Text = null;
             content.Text = null;
 
+
+            string cmdData = "quit" + "\r\n";
+            byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+            StrmWtr.Write(szData, 0, szData.Length);
+            //Console.WriteLine(StrmRdr.ReadLine());
+
+
             sign_in sign_in_wnd = new sign_in();
             Hide();
             sign_in_wnd.ShowDialog();
@@ -359,6 +368,11 @@ namespace E_mail_implements
             sender_email.Text = null;
             Date.Text = null;
             content.Text = null;
+
+            string cmdData = "quit" + "\r\n";
+            byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+            StrmWtr.Write(szData, 0, szData.Length);
+            //Console.WriteLine(StrmRdr.ReadLine());
 
             sign_in sign_in_wnd = new sign_in();
 
@@ -435,9 +449,67 @@ namespace E_mail_implements
         {
             email_overview_display_bg temp = (email_overview_display_bg)sender;
             int index = Convert.ToInt32(temp.Name);
-            subject.Text = mails[index].subject;
-            sender_email.Text = mails[index].sender;
-            Date.Text = mails[index].date;
+            subject.Text = "主题：" + mails[index].subject;
+            sender_email.Text = "发件人：" + mails[index].sender;
+
+            //对邮件的时间格式进行修正
+            if (mails[index].date != "")
+            {
+                string date = mails[index].date;
+                string DayOfWeek;
+                string Year;
+                string Month;
+                string Day;
+                string Time;
+                DayOfWeek = date.Split(',')[0];
+                Year = date.Split(',')[1].Split(' ')[3];
+                Month = date.Split(',')[1].Split(' ')[2];
+                Day = date.Split(',')[1].Split(' ')[1];
+                Time = date.Split(',')[1].Split(' ')[4];
+                if (DayOfWeek == "Mon")
+                    DayOfWeek = "星期一";
+                else if (DayOfWeek == "Tue")
+                    DayOfWeek = "星期二";
+                else if (DayOfWeek == "Wed")
+                    DayOfWeek = "星期三";
+                else if (DayOfWeek == "Thu")
+                    DayOfWeek = "星期四";
+                else if (DayOfWeek == "Fri")
+                    DayOfWeek = "星期五";
+                else if (DayOfWeek == "Sat")
+                    DayOfWeek = "星期六";
+                else if (DayOfWeek == "Sun")
+                    DayOfWeek = "星期日";
+
+                if (Month == "Jan")
+                    Month = "1";
+                else if (Month == "Feb")
+                    Month = "2";
+                else if (Month == "Mar")
+                    Month = "3";
+                else if (Month == "Apr")
+                    Month = "4";
+                else if (Month == "May")
+                    Month = "5";
+                else if (Month == "Jun")
+                    Month = "6";
+                else if (Month == "Jul")
+                    Month = "7";
+                else if (Month == "Aug")
+                    Month = "8";
+                else if (Month == "Sept")
+                    Month = "9";
+                else if (Month == "Oct")
+                    Month = "10";
+                else if (Month == "Nov")
+                    Month = "11";
+                else if (Month == "Dec")
+                    Month = "12";
+                Date.Text = "时   间：" + Year + "年" + Month + "月" + Day + "日" + "（" + DayOfWeek + "）" + Time;
+            }
+            else
+                Date.Text = null;
+
             content.Text = mails[index].content;
             for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
             {
@@ -574,7 +646,6 @@ namespace E_mail_implements
 
         private void write_email_btn_Click(object sender, EventArgs e)
         {
-            //添加编写邮件界面的代码
             write_email write_email_wnd = new write_email();
             write_email_wnd.ShowDialog();
         }

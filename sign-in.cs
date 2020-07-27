@@ -73,7 +73,7 @@ namespace E_mail_implements
                 MainWnd.hasAccount = null;
             }
 
-            //添加socket连接部分的代码
+            //POP3_socket连接
             TcpClient Server;
             NetworkStream StrmWtr;
             StreamReader StrmRdr;
@@ -98,7 +98,7 @@ namespace E_mail_implements
                     szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
                     StrmWtr.Write(szData, 0, szData.Length);
                     string s = StrmRdr.ReadLine();
-                    Console.WriteLine(s);
+                    //Console.WriteLine(s);
                     if (s[0] == '-')
                     {
                         MessageBox.Show("POP3连接时出错，请检查您的账户和授权码");

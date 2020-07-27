@@ -42,7 +42,7 @@ namespace E_mail_implements
         }
         public void setSubject(String Envelop)//获得主题
         {
-            string reg = "(?<=(Subject: ))[.\\s\\S]*?(?=(\n))";
+            string reg = "(?<=(ubject: ))[.\\s\\S]*?(?=(\n))";
             string[] a = Getunit(Envelop, reg);
             if (a == null)
             {
