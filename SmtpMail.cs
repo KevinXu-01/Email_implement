@@ -13,9 +13,7 @@ namespace E_mail_implements
         private TcpClient SmtpClient;
         private NetworkStream stream;
         private StreamReader rstream;
-        //private String smd;
         Byte[] data;
-        //private String CRLF = "\r\n";
 
         public void Connect(String server)
         {

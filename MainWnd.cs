@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Configuration;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace E_mail_implements
@@ -33,6 +33,9 @@ namespace E_mail_implements
         public static StreamReader StrmRdr;//添加账户时打开登录界面(登录窗体关闭时不退出程序)
         public static int numberOfEmails;
         List<mail> mails;
+        List<email_overview_display_bg> overviews;
+        private String cmd;
+        private const String CRLF = "\r\n";
         public MainWnd()
         {
             InitializeComponent();
@@ -92,38 +95,147 @@ namespace E_mail_implements
                     sign_in_wnd.ShowDialog();
                     Show();
                     isLoggedIn = true;
-                }
-            }
-            mails = new List<mail>();
-            
-            int count = numberOfEmails;
-            while (count > 0)
-            {
-                String cmdData;
-                byte[] szData;
-                string szTemp;
-                StringBuilder str = new StringBuilder();
-                const String CRLF = "\r\n";
-                cmdData = "RETR "+count + CRLF;
-                szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
-                StrmWtr.Write(szData, 0, szData.Length);
-                szTemp = getSatus(StrmRdr);
+                    mails = new List<mail>();
 
-                if (szTemp[0] != '-')
-                {
-                    while (szTemp != ".")
+                    int count = numberOfEmails;
+                    while (count > 0)
                     {
-                        str.Append(szTemp + "\r\n");
-                        szTemp = StrmRdr.ReadLine();
+                        String cmdData;
+                        byte[] szData;
+                        string szTemp;
+                        StringBuilder str = new StringBuilder();
+                        const String CRLF = "\r\n";
+                        cmdData = "RETR " + count + CRLF;
+                        szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                        StrmWtr.Write(szData, 0, szData.Length);
+                        szTemp = getSatus(StrmRdr);
+
+                        if (szTemp[0] != '-')
+                        {
+                            while (szTemp != ".")
+                            {
+                                str.Append(szTemp + "\r\n");
+                                szTemp = StrmRdr.ReadLine();
+                            }
+                        }
+
+                        String a = str.ToString();
+                        mail mail = new mail(a);
+                        mails.Add(mail);
+                        count--;
                     }
                 }
+                else //自动登录，先连接
+                {
+                    //POP3_socket连接
+                    TcpClient Server;
+                    NetworkStream StrmWtr;
+                    StreamReader StrmRdr;
+                    byte[] szData;
+                    String cmdData;
+                    const String CRLF = "\r\n";
+                    Server = new TcpClient(accounts[current_index].pop3_server_address, 110);
+                    try
+                    {
+                        StrmWtr = Server.GetStream();
+                        StrmRdr = new StreamReader(Server.GetStream());
 
-                String a = str.ToString();
-                mail mail = new mail(a);
-               mails.Add(mail);
-                count--;
+                        cmdData = "USER " + accounts[current_index].email_address + CRLF;
+                        szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                        StrmWtr.Write(szData, 0, szData.Length);
+                        StrmRdr.ReadLine();
+                        cmdData = "PASS " + accounts[current_index].password + CRLF;
+                        szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                        StrmWtr.Write(szData, 0, szData.Length);
+                        StrmRdr.ReadLine();
+                        cmdData = "STAT" + CRLF;
+                        szData = Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                        StrmWtr.Write(szData, 0, szData.Length);
+                        string s = StrmRdr.ReadLine();
+                        //Console.WriteLine(s);
+                        if (s[0] == '-')
+                        {
+                            MessageBox.Show("POP3连接时出错，请检查您的账户和授权码");
+                            return;
+                        }
+
+
+                        MainWnd.StrmWtr = StrmWtr;
+                        MainWnd.StrmRdr = StrmRdr;
+                        numberOfEmails = getNum(StrmRdr.ReadLine());
+                    }
+                    catch (InvalidOperationException err)
+                    {
+                        Console.WriteLine("ERROR: " + err.Message.ToString());
+                    }
+
+
+                    //SMTP
+                    SM.Connect(accounts[current_index].smtp_server_address);
+                    cmd = "HELO " + accounts[current_index].smtp_server_address + CRLF;
+                    SM.sendMessage(cmd);
+                    cmd = "AUTH LOGIN" + CRLF;
+                    SM.sendMessage(cmd);
+                    cmd = Convert.ToBase64String(Encoding.ASCII.GetBytes(accounts[current_index].email_address)) + CRLF;
+                    SM.sendMessage(cmd);
+                    cmd = Convert.ToBase64String(Encoding.ASCII.GetBytes(accounts[current_index].password)) + CRLF;
+                    SM.sendMessage(cmd);
+
+
+
+                    mails = new List<mail>();
+                    int count = numberOfEmails;
+                    while (count > 0)
+                    {
+                        string cmdData_1;
+                        byte[] szData_1;
+                        string szTemp;
+                        StringBuilder str = new StringBuilder();
+                        const String CRLF_1 = "\r\n";
+                        cmdData_1 = "RETR " + count + CRLF_1;
+                        szData_1 = Encoding.ASCII.GetBytes(cmdData_1.ToCharArray());
+                        MainWnd.StrmWtr.Write(szData_1, 0, szData_1.Length);
+                        szTemp = getSatus(MainWnd.StrmRdr);
+
+                        if (szTemp[0] != '-')
+                        {
+                            while (szTemp != ".")
+                            {
+                                str.Append(szTemp + "\r\n");
+                                szTemp = MainWnd.StrmRdr.ReadLine();
+                            }
+                        }
+
+                        String a = str.ToString();
+                        mail mail = new mail(a);
+                        mails.Add(mail);
+                        count--;
+                    }
+                }
             }
         }
+        public int getNum(String Envelop)//获得主题
+        {
+            string reg = "(?<=( ))[.\\s\\S]*?(?=( ))";
+            string a = GetSingle(Envelop, reg);
+            return int.Parse(a);
+        }
+        private string GetSingle(string value, string regx)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+            bool isMatch = Regex.IsMatch(value, regx);
+            if (!isMatch)
+            {
+                return null;
+            }
+            MatchCollection matchCol = Regex.Matches(value, regx);
+
+            string result = matchCol[0].Value;
+
+            return result;
+        }
+
         static String getSatus(StreamReader r)
         {
             String ret = r.ReadLine();
@@ -131,7 +243,14 @@ namespace E_mail_implements
         }
         private void MainWnd_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(hasAccount != null)
+            if (isLoggedIn == true)
+            {
+                string cmdData = "quit" + "\r\n";
+                byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                StrmWtr.Write(szData, 0, szData.Length);
+                //Console.WriteLine(StrmRdr.ReadLine());
+            }
+            if (hasAccount != null)
             {
                 File.Delete(@"accounts.dat");
                 FileStream file = new FileStream(@"accounts.dat", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -179,7 +298,6 @@ namespace E_mail_implements
             Date.Text = null;
             content.Text = null;
 
-            //添加删除信件编辑代码
             sign_in sign_in_wnd = new sign_in();
             sign_in_wnd.ShowDialog();
         }
@@ -211,7 +329,11 @@ namespace E_mail_implements
             Date.Text = null;
             content.Text = null;
 
-            //添加删除信件编辑代码
+
+            string cmdData = "quit" + "\r\n";
+            byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+            StrmWtr.Write(szData, 0, szData.Length);
+            //Console.WriteLine(StrmRdr.ReadLine());
 
 
             sign_in sign_in_wnd = new sign_in();
@@ -247,10 +369,10 @@ namespace E_mail_implements
             Date.Text = null;
             content.Text = null;
 
-
-            //添加删除信件编辑部分控件的代码
-
-
+            string cmdData = "quit" + "\r\n";
+            byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+            StrmWtr.Write(szData, 0, szData.Length);
+            //Console.WriteLine(StrmRdr.ReadLine());
 
             sign_in sign_in_wnd = new sign_in();
 
@@ -298,6 +420,7 @@ namespace E_mail_implements
 
         private void inbox_btn_Click(object sender, EventArgs e)
         {
+            overviews = new List<email_overview_display_bg>();
             for(int i = 0; i < numberOfEmails; i++)
             {
                 Point point = new Point(0, 68 * i);
@@ -316,6 +439,8 @@ namespace E_mail_implements
                 }
                 email_overview.Location = point;
                 email_overview.Click += new EventHandler(email_overview_display_Click);
+                //overview是panel，overviews是list
+                overviews.Add(email_overview);
                 overview.Controls.Add(email_overview);
             }
         }
@@ -324,9 +449,67 @@ namespace E_mail_implements
         {
             email_overview_display_bg temp = (email_overview_display_bg)sender;
             int index = Convert.ToInt32(temp.Name);
-            subject.Text = mails[index].subject;
-            sender_email.Text = mails[index].sender;
-            Date.Text = mails[index].date;
+            subject.Text = "主题：" + mails[index].subject;
+            sender_email.Text = "发件人：" + mails[index].sender;
+
+            //对邮件的时间格式进行修正
+            if (mails[index].date != "")
+            {
+                string date = mails[index].date;
+                string DayOfWeek;
+                string Year;
+                string Month;
+                string Day;
+                string Time;
+                DayOfWeek = date.Split(',')[0];
+                Year = date.Split(',')[1].Split(' ')[3];
+                Month = date.Split(',')[1].Split(' ')[2];
+                Day = date.Split(',')[1].Split(' ')[1];
+                Time = date.Split(',')[1].Split(' ')[4];
+                if (DayOfWeek == "Mon")
+                    DayOfWeek = "星期一";
+                else if (DayOfWeek == "Tue")
+                    DayOfWeek = "星期二";
+                else if (DayOfWeek == "Wed")
+                    DayOfWeek = "星期三";
+                else if (DayOfWeek == "Thu")
+                    DayOfWeek = "星期四";
+                else if (DayOfWeek == "Fri")
+                    DayOfWeek = "星期五";
+                else if (DayOfWeek == "Sat")
+                    DayOfWeek = "星期六";
+                else if (DayOfWeek == "Sun")
+                    DayOfWeek = "星期日";
+
+                if (Month == "Jan")
+                    Month = "1";
+                else if (Month == "Feb")
+                    Month = "2";
+                else if (Month == "Mar")
+                    Month = "3";
+                else if (Month == "Apr")
+                    Month = "4";
+                else if (Month == "May")
+                    Month = "5";
+                else if (Month == "Jun")
+                    Month = "6";
+                else if (Month == "Jul")
+                    Month = "7";
+                else if (Month == "Aug")
+                    Month = "8";
+                else if (Month == "Sept")
+                    Month = "9";
+                else if (Month == "Oct")
+                    Month = "10";
+                else if (Month == "Nov")
+                    Month = "11";
+                else if (Month == "Dec")
+                    Month = "12";
+                Date.Text = "时   间：" + Year + "年" + Month + "月" + Day + "日" + "（" + DayOfWeek + "）" + Time;
+            }
+            else
+                Date.Text = null;
+
             content.Text = mails[index].content;
             for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
             {
@@ -353,7 +536,7 @@ namespace E_mail_implements
             delete_btn.UseVisualStyleBackColor = false;
             delete_btn.Click += new EventHandler(delete_btn_Click);
             delete_btn.MouseEnter += new EventHandler(delete_btn_MouseEnter);
-            //delete_btn.MouseLeave += new EventHandler(delete_btn_MouseLeave);
+            delete_btn.MouseLeave += new EventHandler(delete_btn_MouseLeave);
             details.Controls.Add(delete_btn);
 
             if (mails[index].hasFile == true)
@@ -379,16 +562,16 @@ namespace E_mail_implements
                 {
                     LinkLabel attachments = new LinkLabel();
 
-                    attachments.Text = Convert.ToString(files[i].Name);
                     //
                     // attachments
                     //
                     attachments.AutoSize = true;
+                    attachments.Text = Convert.ToString(files[i].Name);
                     attachments.Font = new Font("微软雅黑", 10.5F, FontStyle.Regular, GraphicsUnit.Point, (byte)134);
                     attachments.Location = new Point(14, attachment_notice.Location.Y + attachment_notice.Size.Height + i * 20);
-                    attachments.Name = "attachments";
+                    attachments.Name = Convert.ToString(index) + "-" + Convert.ToString(i);
                     attachments.Size = new Size(0, 20);
-
+                    attachments.Click += new EventHandler(linkLabel_LinkClicked);
                     details.Controls.Add(attachments);
                 }
             }
@@ -397,73 +580,58 @@ namespace E_mail_implements
         private void delete_btn_Click(object sender, EventArgs e)
         {
             Button temp = (Button)sender;
+            int index = Convert.ToInt32(temp.Name);
+            email_overview_display_bg tmp = new email_overview_display_bg();
 
-            /*
-            //测试
-            int j = Convert.ToInt32(temp.Name) + 1;
-            email_overview_display_bg temp_overview_0 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(j - 2), false)[0];
-            email_overview_display_bg temp_overview_1 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(j - 1), false)[0];
-            label1.Text = temp_overview_0.Name;
-            label1.Text += temp_overview_1.Name;*/
-
-            ////////////////////////////////////////////////////////////////////////BUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //左侧重新排列
-
-            for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails; i++)
+            string cmdData = "dele "+(numberOfEmails-index).ToString() + "\r\n";
+            byte[] szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+            StrmWtr.Write(szData, 0, szData.Length);
+            if (StrmRdr.ReadLine()[0] == '+')
             {
-                email_overview_display_bg temp_overview_0 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i - 1), false)[0];
-                email_overview_display_bg temp_overview_1 = (email_overview_display_bg)overview.Controls.Find(Convert.ToString(i), false)[0];
-                
-                temp_overview_1.sender_email.Text = temp_overview_0.sender_email.Text;
-                temp_overview_1.subject.Text = temp_overview_0.subject.Text;
-                temp_overview_1.content.Text = temp_overview_0.content.Text;
-                temp_overview_1.Location = temp_overview_0.Location;
-                //temp_overview_1.Name = temp_overview_0.Name;
-                //temp_overview_1 = temp_overview_0;
-                //temp_overview_0.Dispose();
-                if(i == Convert.ToInt32(temp.Name))
-                    overview.Controls.Remove(temp_overview_0);
-                //overview.Controls.Add(temp_overview_1);
-            }
-            
-            //删除邮件
-            for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails - 1; i++)
-            {
-                mails[i] = mails[i + 1];
-            }
-            mails[numberOfEmails - 1].sender = null;
-            mails[numberOfEmails - 1].subject = null;
-            mails[numberOfEmails - 1].date = null;
-            mails[numberOfEmails - 1].content = null;
-            mails[numberOfEmails - 1].hasFile = false;
-            numberOfEmails--;
-
-
-
-            //将右侧内容清空
-            for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
-            {
-                foreach (Control control in details.Controls)
+                tmp.Name = overviews[index].Name;
+                tmp.Location = overviews[index].Location;
+                //重新排列自定义控件
+                for (int i = Convert.ToInt32(temp.Name); i < numberOfEmails - 1; i++)
                 {
-                    if (control is LinkLabel || (control is Label && control.Text == "附件列表："))
-                        control.Dispose();
+                    email_overview_display_bg tmp_1 = new email_overview_display_bg();
+                    tmp_1.Name = overviews[i + 1].Name;
+                    tmp_1.Location = overviews[i + 1].Location;
+                    overviews[i + 1].Name = tmp.Name;
+                    overviews[i + 1].Location = tmp.Location;
+                    tmp.Name = tmp_1.Name;
+                    tmp.Location = tmp_1.Location;
                 }
+
+                //删除index处的自定义控件
+                overviews.RemoveAt(index);
+
+                //删除邮件
+                mails.RemoveAt(index);
+
+                //将右侧内容清空
+                for (int i = 0; i <= 10; i++)//1次循环无法清理干净，所以执行多次循环
+                {
+                    foreach (Control control in details.Controls)
+                    {
+                        if (control is LinkLabel || (control is Label && control.Text == "附件列表："))
+                            control.Dispose();
+                    }
+                }
+                subject.Text = null;
+                sender_email.Text = null;
+                Date.Text = null;
+                content.Text = null;
+
+                //刷新自定义控件
+                overview.Controls.Clear();
+                for (int i = 0; i < overviews.Count(); i++)
+                    overview.Controls.Add(overviews[i]);
+                MessageBox.Show("已添加删除标记，客户端关闭后即可删除");
             }
-            subject.Text = null;
-            sender_email.Text = null;
-            Date.Text = null;
-            content.Text = null;
-
-
-            /*
-            //删除自定义控件
-            foreach (Control control in overview.Controls)
+            else
             {
-                if (control is email_overview_display_bg && control.Name == temp.Name)
-                    control.Dispose();
+                MessageBox.Show("删除失败");
             }
-            */
-
         }
         private void delete_btn_MouseEnter(object sender, EventArgs e)
         {
@@ -478,14 +646,31 @@ namespace E_mail_implements
 
         private void write_email_btn_Click(object sender, EventArgs e)
         {
-            //添加编写邮件界面的代码
             write_email write_email_wnd = new write_email();
             write_email_wnd.ShowDialog();
         }
 
-        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+
+        private void linkLabel_LinkClicked(object sender, EventArgs e)
         {
-            
+            LinkLabel temp = (LinkLabel)sender;
+            int indexOfEmail, indexOfFile;
+            indexOfEmail = Convert.ToInt32(temp.Name.Split('-')[0]);
+            indexOfFile =Convert.ToInt32(temp.Name.Split('-')[1]);
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.FileName = mails[indexOfEmail].files[indexOfFile].Name;
+            saveFile.Filter = "所有文件(*.*)|*.*";
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                //创建一个文件流对象，用于写文件
+                FileStream file = new FileStream(saveFile.FileName, FileMode.Create);
+                //创建一个与文件流对象相对应的二进制写入流对象
+                BinaryWriter binaryWriter = new BinaryWriter(file);
+                binaryWriter.Write(Convert.FromBase64String(mails[indexOfEmail].files[indexOfFile].BaseCode));
+                //关闭所有文件流对象
+                binaryWriter.Close();
+                file.Close();
+            }
         }
     }
 }

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
@@ -60,20 +53,6 @@ namespace E_mail_implements
             Close();
 
         }
-        public static string EncodeBase64(string code)
-        {
-            string encode = "";
-            byte[] bytes = Encoding.GetEncoding("gb2312").GetBytes(code);
-            try
-            {
-                encode = Convert.ToBase64String(bytes);
-            }
-            catch
-            {
-                encode = code;
-            }
-            return encode;
-        }
 
         private void attach_btn_Click(object sender, EventArgs e)
         {
@@ -81,13 +60,13 @@ namespace E_mail_implements
             dialog.Multiselect = true;//该值确定是否可以选择多个文件
             dialog.Title = "请选择文件夹";
             dialog.Filter = "所有文件(*.*)|*.*";
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
                 filename = dialog.FileName;
             }
-
-            String tmp = File.ReadAllText(filename, System.Text.Encoding.GetEncoding("gb2312"));
-            filedata = EncodeBase64(tmp);
+            byte[] tmp = File.ReadAllBytes(filename);
+            filedata = Convert.ToBase64String(tmp);
+            MessageBox.Show("附件添加成功！");
         }
     }
 }

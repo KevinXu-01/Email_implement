@@ -42,7 +42,7 @@ namespace E_mail_implements
         }
         public void setSubject(String Envelop)//获得主题
         {
-            string reg = "(?<=(Subject: ))[.\\s\\S]*?(?=(\n))";
+            string reg = "(?<=(ubject: ))[.\\s\\S]*?(?=(\n))";
             string[] a = Getunit(Envelop, reg);
             if (a == null)
             {
@@ -124,7 +124,7 @@ namespace E_mail_implements
                        //附件提取
                         string filenameReg = "(?<=(filename=\"))[.\\s\\S]*?(?=(\"))";
                         string filename = GetSingle(a[i], filenameReg);
-                        string codeReg = "(?<=(\r\n\r\n))[.\\s\\S]*?(?=(\r\n--))";
+                        string codeReg = "(?<=(\r\n\r\n))[.\\s\\S]*?(?=(\r\n))";
                         string code = GetSingle(a[i], codeReg);
                         string TypeReg = "(?<=(Content-Type: ))[.\\s\\S]*?(?=(;))";
                         string type = GetSingle(a[i], TypeReg);
