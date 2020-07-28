@@ -19,7 +19,7 @@ namespace E_mail_implements
         {
             //Send Email
             cmdData = "MAIL FROM: <" + MainWnd.accounts[MainWnd.current_index].email_address + ">" + CRLF;
-           MainWnd.SM.sendMessage(cmdData);
+            MainWnd.SM.sendMessage(cmdData);
 
             cmdData = "RCPT TO: <" + receiver.Text + ">" + CRLF;
             MainWnd.SM.sendMessage(cmdData);

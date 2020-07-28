@@ -29,7 +29,7 @@ namespace E_mail_implements
         public static int current_index;//当前使用的账户的索引
         public static bool isLoggedIn; //判断是否已经登录，用于区分登录前打开登录界面(登录窗体关闭时退出程序)和登录后
         public static NetworkStream StrmWtr;
-        public static SmtpMail SM=new SmtpMail();
+        public static SmtpMail SM = new SmtpMail();
         public static StreamReader StrmRdr;//添加账户时打开登录界面(登录窗体关闭时不退出程序)
         public static int numberOfEmails;
         List<mail> mails;
