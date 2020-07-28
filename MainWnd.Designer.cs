@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWnd));
             this.菜单 = new System.Windows.Forms.MenuStrip();
             this.AccountStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddAccountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -203,6 +204,7 @@
             this.Controls.Add(this.inbox_btn);
             this.Controls.Add(this.菜单);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.菜单;
             this.MaximizeBox = false;
             this.Name = "MainWnd";
