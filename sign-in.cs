@@ -122,7 +122,7 @@ namespace E_mail_implements
                 Console.WriteLine("ERROR: " + err.Message.ToString());
             }
     
-            MainWnd.SM.Connect(smtp_server_address.Text);
+            MainWnd.SM.Connect(MainWnd.accounts[MainWnd.current_index].smtp_server_address);
 
             cmd = "HELO " + MainWnd.accounts[MainWnd.current_index].smtp_server_address + CRLF;
             MainWnd.SM.sendMessage(cmd);
