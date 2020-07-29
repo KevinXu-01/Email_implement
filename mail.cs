@@ -14,7 +14,7 @@ namespace E_mail_implements
         public String date;//日期
         public String subject;//主题
         public String content;//正文
-        public bool hasFile;//是否有附件（还没写）
+        public bool hasFile;//是否有附件
         public List<Mail_file> files = new List<Mail_file>();//附件列表
         public mail(String Envelop)
         {

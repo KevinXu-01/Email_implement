@@ -85,47 +85,38 @@ namespace E_mail_implements
             {
                 StrmWtr = Server.GetStream();
                 StrmRdr = new StreamReader(Server.GetStream());
-                
-                    cmdData = "USER " + sign_in_combobox.Text + CRLF;
-                    szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
-                    StrmWtr.Write(szData, 0, szData.Length);
-                    StrmRdr.ReadLine();
-                    cmdData = "PASS " + password.Text + CRLF;
-                    szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
-                    StrmWtr.Write(szData, 0, szData.Length);
-                    StrmRdr.ReadLine();
-                    cmdData = "STAT" + CRLF;
-                    szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
-                    StrmWtr.Write(szData, 0, szData.Length);
-                    string s = StrmRdr.ReadLine();
-                    //Console.WriteLine(s);
-                    if (s[0] == '-')
-                    {
-                        MessageBox.Show("POP3连接时出错，请检查您的账户和授权码");
-                        return;
-                    }
-                   
-                
+                cmdData = "USER " + sign_in_combobox.Text + CRLF;
+                szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                StrmWtr.Write(szData, 0, szData.Length);
+                StrmRdr.ReadLine();
+                cmdData = "PASS " + password.Text + CRLF;
+                szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                StrmWtr.Write(szData, 0, szData.Length);
+                StrmRdr.ReadLine();
+                cmdData = "STAT" + CRLF;
+                szData = System.Text.Encoding.ASCII.GetBytes(cmdData.ToCharArray());
+                StrmWtr.Write(szData, 0, szData.Length);
+                string s = StrmRdr.ReadLine();
+                //Console.WriteLine(s);
+                if (s[0] == '-')
+                {
+                    MessageBox.Show("POP3连接时出错，请检查您的账户和授权码");
+                    return;
+                }
                 MainWnd.StrmWtr = StrmWtr;
                 MainWnd.StrmRdr = StrmRdr;
                 MainWnd.numberOfEmails = getNum(StrmRdr.ReadLine());
-                //错误处理 
-          
-            //连接SMTP服务器
-             
-
-
             }
+            //错误处理 
             catch (InvalidOperationException err)
             {
                 Console.WriteLine("ERROR: " + err.Message.ToString());
             }
-    
-            MainWnd.SM.Connect(MainWnd.accounts[MainWnd.current_index].smtp_server_address);
 
+            //连接SMTP服务器
+            MainWnd.SM.Connect(MainWnd.accounts[MainWnd.current_index].smtp_server_address);
             cmd = "HELO " + MainWnd.accounts[MainWnd.current_index].smtp_server_address + CRLF;
             MainWnd.SM.sendMessage(cmd);
-            
 
             cmd = "AUTH LOGIN" + CRLF;
             MainWnd.SM.sendMessage(cmd);
@@ -135,7 +126,6 @@ namespace E_mail_implements
 
             cmd = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(MainWnd.accounts[MainWnd.current_index].password)) + CRLF;
             MainWnd.SM.sendMessage(cmd);
-
 
             Close();
         }
